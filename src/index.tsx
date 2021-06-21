@@ -12,10 +12,15 @@ import "./index.scss";
 import App from "./layouts/App";
 import NetworkContext from "./contexts/NetworkContext";
 import CurrencyContext from "./contexts/CurrencyContext";
+import LogfinderContext from "./contexts/LogfinderContext";
 import * as Sentry from "@sentry/browser";
 import * as serviceWorker from "./serviceWorker";
 import { DEFAULT_CURRENCY, DEFAULT_NETWORK } from "./scripts/utility";
 import { getCookie, setCookie } from "./scripts/cookie";
+import { anchorRuleSet } from "./logfinder/rule-set/anchor-rule-set";
+import { mirrorRuleSet } from "./logfinder/rule-set/mirror-rule-set";
+import { terraRuleSet } from "./logfinder/rule-set/terra-rule-set";
+import { tokenRuleSet } from "./logfinder/rule-set/token-rule-set";
 
 if (
   process.env.REACT_APP_SENTRY_DSN &&
@@ -41,12 +46,21 @@ const Root = () => {
     setCurrency(currency);
   };
 
+  const ruleArray = [
+    anchorRuleSet(network),
+    mirrorRuleSet(network),
+    terraRuleSet(),
+    tokenRuleSet()
+  ].flat();
+
   return (
     <NetworkContext.Provider value={{ network, selectNetwork }}>
       <CurrencyContext.Provider value={{ currency, selectCurrency }}>
-        <Switch>
-          <App />
-        </Switch>
+        <LogfinderContext.Provider value={{ ruleArray }}>
+          <Switch>
+            <App />
+          </Switch>
+        </LogfinderContext.Provider>
       </CurrencyContext.Provider>
     </NetworkContext.Provider>
   );

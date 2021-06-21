@@ -1,41 +1,73 @@
 import React, { useContext } from "react";
 import { useHistory } from "react-router-dom";
+import { isEmpty } from "lodash";
+import { Coin } from "@terra-money/terra.js";
 import WithFetch from "../../HOCs/WithFetch";
 import FlexTable from "../../components/FlexTable";
 import Pagination, { PaginationProps } from "../../components/Pagination";
 import Loading from "../../components/Loading";
 import Info from "../../components/Info";
 import Card from "../../components/Card";
+import Icon from "../../components/Icon";
 import Finder from "../../components/Finder";
 import CoinComponent from "../../components/Coin";
-import { isEmpty } from "lodash";
 import { fromISOTime, sliceMsgType } from "../../scripts/utility";
 import format from "../../scripts/format";
 import NetworkContext from "../../contexts/NetworkContext";
+import LogfinderContext from "../../contexts/LogfinderContext";
+import { LogFindersRuleSet } from "../../logfinder/types";
+import { getTxInfo } from "../../logfinder/format";
 import s from "./Txs.module.scss";
 
-type Amount = {
-  amount: [
-    {
-      amount: string;
-      denom: string;
-    }
-  ];
-  from_address: string;
+type Fee = {
+  denom: string;
+  amount: string;
 };
 
-const getAmount = (prop: Amount, address: string) => {
-  if (!prop.amount?.[0]) return "-";
+const TerraAddressRegExp = /(terra[0-9][a-z0-9]{38})/g;
 
-  const { denom, amount } = prop.amount[0];
-  const from_address = prop.from_address;
+const getTxFee = (prop: Fee) =>
+  prop && `${format.amount(prop.amount)} ${format.denom(prop.denom)}`;
 
-  return (
-    <>
-      {from_address === address ? "-" : "+"}
-      <CoinComponent amount={amount} denom={denom} />
-    </>
-  );
+const formatAmount = (amount: string) => {
+  try {
+    const coinData = Coin.fromString(amount);
+    return (
+      <CoinComponent
+        amount={coinData.amount.toString()}
+        denom={coinData.denom}
+      />
+    );
+  } catch {
+    const res = amount.match(TerraAddressRegExp)?.[0];
+    const value = amount.split(TerraAddressRegExp)[0];
+
+    return res && <CoinComponent amount={value} denom={res} />;
+  }
+};
+
+const getAmount = (txResponse: TxResponse, ruleArray: LogFindersRuleSet[]) => {
+  const tx = JSON.stringify(txResponse);
+  const amountIn: JSX.Element[] = [];
+  const amountOut: JSX.Element[] = [];
+  const info = getTxInfo(tx, ruleArray);
+  if (info) {
+    for (const msg of info) {
+      if (msg.transformed?.amountIn) {
+        msg.transformed?.amountIn.split(",").forEach(amount => {
+          const coin = formatAmount(amount.trim());
+          coin && amountIn.push(coin);
+        });
+      }
+      if (msg.transformed?.amountOut) {
+        msg.transformed?.amountOut.split(",").forEach(amount => {
+          const coin = formatAmount(amount.trim());
+          coin && amountOut.push(coin);
+        });
+      }
+    }
+  }
+  return [amountIn, amountOut];
 };
 
 const Txs = ({
@@ -47,6 +79,7 @@ const Txs = ({
   pathname: string;
 }) => {
   const { network } = useContext(NetworkContext);
+  const { ruleArray } = useContext(LogfinderContext);
   const history = useHistory();
   const searchParams = new URLSearchParams(search);
   const offset = +(searchParams.get("offset") || 0);
@@ -59,28 +92,63 @@ const Txs = ({
   const getRow = (response: TxResponse) => {
     const { tx: txBody, txhash, height, timestamp, chainId } = response;
     const isSuccess = !response.code;
+
+    const [amountIn, amountOut] = getAmount(response, ruleArray);
+
     return [
       <span>
-        <Finder q="tx" network={network} v={txhash}>
-          {format.truncate(txhash, [8, 8])}
-        </Finder>
+        <div className={s.wrapper}>
+          <Finder q="tx" network={network} v={txhash}>
+            {format.truncate(txhash, [8, 8])}
+          </Finder>
+          {isSuccess ? (
+            <Icon name="check" className={s.success} />
+          ) : (
+            <Icon name="warning" className={s.fail} />
+          )}
+        </div>
       </span>,
       <span className="type">{sliceMsgType(txBody.value.msg[0].type)}</span>,
-      <span className={isSuccess ? s.success : s.fail}>
-        {isSuccess ? `Success` : `Failed`}
-      </span>,
       <span>
         <Finder q="blocks" network={network} v={height}>
           {height}
         </Finder>
         <span>({chainId})</span>
       </span>,
+      <span className={s.amount}>
+        {amountOut.length
+          ? amountOut.map((amount, index) => {
+              if (index === 2)
+                return <Finder q="tx" v={txhash} children="..." key={index} />;
+              else if (index > 2) return null;
+              else return <span key={index}>-{amount}</span>;
+            })
+          : "-"}
+      </span>,
+      <span className={s.amount}>
+        {amountIn.length
+          ? amountIn.map((amount, index) => {
+              if (index === 2)
+                return <Finder q="tx" v={txhash} children="..." key={index} />;
+              else if (index > 2) return null;
+              else return <span key={index}>+{amount}</span>;
+            })
+          : "-"}
+      </span>,
       <span>{fromISOTime(timestamp.toString())}</span>,
-      <span>{getAmount(txBody.value.msg[0].value, address)}</span>
+      <span className={s.fee}>{getTxFee(txBody.value.fee.amount[0])}</span>
     ];
   };
 
-  const head = [`Tx hash`, `Type`, `Result`, `Block`, `Timestamp`, `Amount`];
+  const head = [
+    `Tx hash`,
+    `Type`,
+    `Block`,
+    `Amount (Out)`,
+    `Amount (In)`,
+    `Timestamp`,
+    `Fee`
+  ];
   return (
     <WithFetch
       url={`/v1/txs`}
@@ -90,14 +158,16 @@ const Txs = ({
       {({ txs, next }: { txs: TxResponse[] } & PaginationProps) => {
         if (!isEmpty(txs)) {
           return (
-            <Pagination next={next} title="transaction" action={goNext}>
-              <FlexTable
-                head={head}
-                body={txs.map(getRow)}
-                tableStyle={{ border: "none" }}
-                headStyle={{ background: "none" }}
-              ></FlexTable>
-            </Pagination>
+            <>
+              <Pagination next={next} title="transaction" action={goNext}>
+                <FlexTable
+                  head={head}
+                  body={txs.map(getRow)}
+                  tableStyle={{ border: "none" }}
+                  headStyle={{ background: "none" }}
+                />
+              </Pagination>
+            </>
           );
         } else {
           return (

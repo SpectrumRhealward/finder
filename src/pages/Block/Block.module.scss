@@ -29,35 +29,6 @@
   }
 }
 
-.txs {
-  line-height: 30px;
-  height: 30px;
-  .button {
-    display: inline-block;
-    line-height: 30px;
-    height: 30px;
-    position: relative;
-    cursor: pointer;
-    font-size: 15px;
-    -webkit-box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.1);
-    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.1);
-    border-radius: 15px;
-    background-color: $link-bg;
-    padding-left: 20px;
-    padding-right: 16px;
-    color: #fff;
-    text-decoration: none;
-    -webkit-transition: background-color 0.1s;
-    transition: background-color 0.1s;
-    white-space: nowrap;
-    i {
-      vertical-align: middle;
-      margin-top: -3px;
-    }
-  }
-  .none {
-    background-color: rgba(84, 147, 247, 0.5);
-    padding: 0 20px;
-    cursor: default;
-  }
+.none {
+  color: rgba(36, 36, 36, 0.5);
 }

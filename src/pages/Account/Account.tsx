@@ -16,6 +16,9 @@ import Vesting from "./Vesting";
 import CopyAddress from "./CopyAddress";
 import s from "./Account.module.scss";
 import AmountCard from "./AmountCard";
+import { useState } from "react";
+import DatePicker from "react-datepicker";
+import DownloadCSV from "../../components/DownloadCSV";
 
 const TOOLTIP = `This displays your investment with Terra.
 Vested Luna can be delegated in the meantime.`;
@@ -24,11 +27,17 @@ const Account = () => {
   const { search, pathname } = useLocation();
   const { address = "" } = useParams<{ address: string }>();
   const tokens = useTokenBalance(address);
+  const [startDate, setStartDate] = useState<any>(new Date("2021/05/02"));
 
   return (
     <WithFetch url={`/v1/bank/${address}`} loading={<Loading />}>
       {({ balance, vesting }: Account) => (
         <>
+          <DatePicker
+            selected={startDate}
+            onChange={date => setStartDate(date)}
+          />
+
           <h2 className="title">Account Detail</h2>
 
           <CopyAddress>{address}</CopyAddress>
@@ -99,7 +108,12 @@ const Account = () => {
             )}
           </WithFetch>
 
-          <Card title="Transactions" bordered headerClassName={s.cardTitle}>
+          <Card
+            title="Transactions"
+            bordered
+            headerClassName={s.cardTitle}
+            actions={<DownloadCSV address={address} />}
+          >
             <div className={s.cardBodyContainer}>
               <Txs address={address} search={search} pathname={pathname} />
             </div>

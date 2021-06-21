@@ -1,6 +1,5 @@
 import React, { useContext } from "react";
-import { useHistory } from "react-router-dom";
-import { RouteComponentProps } from "react-router-dom";
+import { useHistory, useLocation } from "react-router-dom";
 import { get, isEmpty } from "lodash";
 import s from "./Txs.module.scss";
 import FlexTable from "../../components/FlexTable";
@@ -40,13 +39,16 @@ const getRow = (response: TxResponse) => {
   ];
 };
 
-const Txs = (
-  props: RouteComponentProps<{ height: string; offset: string }>
-) => {
-  const { height } = props.match.params;
+type Prop = {
+  height: string;
+};
+
+const Txs = (props: Prop) => {
+  const { height } = props;
   const { network } = useContext(NetworkContext);
   const history = useHistory();
-  const searchParams = new URLSearchParams(props.location.search);
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
   const offset = +(searchParams.get("offset") || 0);
 
   const goNext = (offset: number) => {
@@ -67,9 +69,6 @@ const Txs = (
           if (!isEmpty(txs)) {
             return (
               <>
-                <h2 className="title">
-                  Transactions<span>for Block #{height}</span>
-                </h2>
                 <Pagination next={next} title="translation" action={goNext}>
                   <FlexTable head={head} body={txs.map(getRow)} />
                 </Pagination>
