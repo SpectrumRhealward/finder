@@ -1,9 +1,9 @@
 import { useContext, useEffect } from "react";
-import { useRequest } from "../HOCs/WithFetch";
 import CurrencyContext from "../contexts/CurrencyContext";
 import s from "./SelectCurrency.module.scss";
 import { getCookie } from "../scripts/cookie";
 import { DEFAULT_CURRENCY, getDefaultCurrency } from "../scripts/utility";
+import useNativeDenoms from "../hooks/useNativeDenoms";
 
 type Props = {
   className?: string;
@@ -11,17 +11,15 @@ type Props = {
 
 const SelectCurrency = (props: Props) => {
   const { currency, selectCurrency } = useContext(CurrencyContext);
-  const response: ActiveDenom = useRequest({ url: `/oracle/denoms/actives` });
-  const currencyArray = response.data?.result.filter(str => str !== "uluna");
-
-  const denom = currencyArray?.includes(currency) ? currency : DEFAULT_CURRENCY;
+  const denoms = useNativeDenoms();
+  const denom = denoms?.includes(currency) ? currency : DEFAULT_CURRENCY;
 
   useEffect(() => {
-    if (!getCookie("currency") && currencyArray && navigator.cookieEnabled) {
-      const currency = getDefaultCurrency(currencyArray);
+    if (!getCookie("currency") && denoms && navigator.cookieEnabled) {
+      const currency = getDefaultCurrency(denoms);
       selectCurrency(currency);
     }
-  }, [selectCurrency, currencyArray]);
+  }, [selectCurrency, denoms]);
 
   return (
     <div className={props.className}>
@@ -30,7 +28,7 @@ const SelectCurrency = (props: Props) => {
         value={denom.substr(1).toUpperCase()}
         onChange={e => selectCurrency(`u${e.target.value}`.toLowerCase())}
       >
-        {currencyArray?.map((currency, key) => {
+        {denoms?.map((currency, key) => {
           const activeDenom = currency.substr(1).toUpperCase();
           return <option key={key}>{activeDenom}</option>;
         })}

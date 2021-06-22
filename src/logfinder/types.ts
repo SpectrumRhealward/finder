@@ -4,7 +4,7 @@ import {
   LogFragment
 } from "@terra-money/log-finder";
 
-interface TransformResult {
+export interface TransformResult {
   msgType: string;
   canonicalMsg: string[];
   payload: LogFragment;
@@ -15,4 +15,15 @@ interface TransformResult {
 export interface LogFindersRuleSet {
   rule: LogFinderRule;
   transform: ReturningLogFinderTransformer<TransformResult>;
+}
+
+export interface LogFinderResult {
+  timestamp: string;
+  fragment: LogFragment;
+  match: {
+    key: string;
+    value: string;
+  }[];
+  height?: number;
+  transformed?: TransformResult;
 }

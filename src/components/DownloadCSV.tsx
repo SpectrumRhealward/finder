@@ -33,7 +33,7 @@ const DownloadCSV = ({ address }: { address: string }) => {
         />
       </div>
       <ExtLink href={csvData?.href} download={`${csvData?.children}.csv`}>
-        <button className={s.csvButton} disabled={csvData.href ? false : true}>
+        <button className={s.csvButton} disabled={csvData?.href ? false : true}>
           Download CSV
         </button>
       </ExtLink>

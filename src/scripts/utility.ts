@@ -134,3 +134,13 @@ export function getDefaultCurrency(denoms: string[]) {
 
   return DEFAULT_CURRENCY;
 }
+
+export function transformChainId(chainId: string) {
+  const chain = chainId.split("-")[0];
+
+  if (chain === "columbus") {
+    return "mainnet";
+  } else {
+    return "testnet";
+  }
+}

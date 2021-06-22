@@ -1,12 +1,14 @@
 @import "../styles/list";
 
 .csvButton {
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 500;
   color: $brand;
   border: 2px solid $brand;
   border-radius: 20px;
-  padding: 3px 8px 3px 8px;
+  padding: 7px 12px 6px;
+  margin: 2px 0 2px 16px;
+  line-height: normal;
 }
 
 .csvButton:disabled {
@@ -20,10 +22,17 @@
 }
 
 .dateComponent {
-  width: 200px;
+  width: 119px;
+  height: 32px;
+  font-size: 14px;
   text-align: center;
   color: $brand;
-  background-color: inherit;
-  border: 0;
+  background-color: white;
+  border: solid 1px #d8ddf0;
+  border-radius: 4px;
+  margin: 6px;
   padding: 0px !important;
+}
+
+.calendar {
 }
