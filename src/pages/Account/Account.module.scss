@@ -2,6 +2,10 @@
 
 .cardTitle {
   background: $table-head;
+
+  @media (max-width: $breakpoint) {
+    flex-wrap: wrap;
+  }
 }
 
 .cardBodyContainer {

@@ -32,12 +32,12 @@ const useDownloadCSV = (address: string, startDate: Date, endDate: Date) => {
     .concat("Luna");
 
   const { whitelist } = useWhitelist(network);
-  const list = whitelist && Object.values(whitelist)?.map(data => data);
-  const symbolAndDenoms = map(list, "symbol").concat(denoms);
+  const symbols = whitelist && Object.values(whitelist)?.map(data => data);
+  const symbolAndDenoms = map(symbols, "symbol").concat(denoms);
 
-  const denomColumns: Column[] = symbolAndDenoms.map(str => ({
+  const denomColumns: Column[] = symbolAndDenoms.map(denom => ({
     dataIndex: [""],
-    title: str
+    title: denom
   }));
   const defaultColumns: Column[] = [
     {
@@ -80,7 +80,7 @@ const createCSV = (
 
     const content = rowArray
       .filter(rows => rows !== undefined)
-      .flat() //transaction have multiple message
+      .flat() //some transaction have multiple message
       .map(rows => rows?.join(","));
     const csv = content && [HEAD, [headings, ...content].join("\n")].join();
 
