@@ -3,7 +3,7 @@ import DatePicker from "react-datepicker";
 import ExtLink from "../components/ExtLink";
 import useDownloadCSV from "../hooks/useDownloadCSV";
 import s from "./DownloadCSV.module.scss";
-import "react-datepicker/dist/react-datepicker.css";
+import "../datepicker/DatePicker.css";
 
 const DownloadCSV = ({ address }: { address: string }) => {
   const [startDate, setStartDate] = useState<any>(new Date().setHours(0, 0, 0));
