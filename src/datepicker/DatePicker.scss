@@ -1,3 +1,5 @@
+@import "../styles/list.scss";
+
 .react-datepicker__navigation-icon::before,
 .react-datepicker__year-read-view--down-arrow,
 .react-datepicker__month-read-view--down-arrow,
@@ -56,7 +58,7 @@
 .react-datepicker-popper[data-placement^="bottom"]
   .react-datepicker__triangle::after {
   border-top: none;
-  border-bottom-color: #2043b5;
+  border-bottom-color: $brand;
 }
 
 .react-datepicker-popper[data-placement^="bottom"]
@@ -171,7 +173,7 @@
   width: 251px;
   height: 72px;
   text-align: center;
-  background-color: #2043b5;
+  background-color: $brand;
   border-bottom: 1px solid #d8ddf0;
   border-top-left-radius: 0.3rem;
   padding: 15px 0px 15px 0px;
@@ -517,7 +519,7 @@
 
 .react-datepicker__day,
 .react-datepicker__time-name {
-  color: #2043b5;
+  color: $brand;
   display: inline-block;
   width: 1.7rem;
   line-height: 1.7rem;
@@ -622,7 +624,7 @@
 .react-datepicker__year-text--in-selecting-range,
 .react-datepicker__year-text--in-range {
   border-radius: 50px;
-  background-color: #2043b5;
+  background-color: $brand;
   color: #fff;
 }
 
@@ -646,7 +648,7 @@
 .react-datepicker__quarter-text--keyboard-selected,
 .react-datepicker__year-text--keyboard-selected {
   border-radius: 50px;
-  background-color: #2043b5;
+  background-color: $brand;
   color: #fff;
 }
 

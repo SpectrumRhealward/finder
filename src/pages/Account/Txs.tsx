@@ -136,7 +136,7 @@ const Txs = ({
           : "-"}
       </span>,
       <span>{fromISOTime(timestamp.toString())}</span>,
-      <span className={s.fee}>{getTxFee(txBody.value.fee.amount[0])}</span>
+      <span>{getTxFee(txBody.value.fee.amount[0])}</span>
     ];
   };
 

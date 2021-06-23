@@ -1,29 +1,35 @@
 @import "../styles/list";
 
+.dateWrapper {
+  display: flex;
+  align-items: center;
+
+  @media (max-width: $breakpoint) {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
 .csvButton {
+  width: 115px;
+  height: 24px;
+  margin: 2px 0 2px 0px;
+  border-radius: 14px;
+  border: solid 1px $brand;
   font-size: 12px;
   font-weight: 500;
   color: $brand;
-  border: 2px solid $brand;
-  border-radius: 20px;
-  padding: 7px 12px 6px;
-  margin: 2px 0 2px 16px;
-  line-height: normal;
+  line-height: 0;
+  letter-spacing: normal;
 }
 
 .csvButton:disabled {
   opacity: 0.5;
 }
 
-.dateWrapper {
-  display: flex;
-  align-items: center;
-  color: $brand;
-}
-
 .dateComponent {
-  width: 119px;
-  height: 32px;
+  width: 104px;
+  height: 28px;
   font-size: 14px;
   text-align: center;
   color: $brand;
@@ -32,4 +38,14 @@
   border-radius: 4px;
   margin: 6px;
   padding: 0px !important;
+}
+
+.dateSelect {
+  display: flex;
+  align-items: center;
+  margin-right: 16px;
+}
+
+.startDateInput {
+  margin-left: 0px;
 }

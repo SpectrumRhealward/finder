@@ -17,7 +17,8 @@ import {
   msgBeginRedelegateRule,
   msgStoreCodeRule,
   msgMigrateContractRule,
-  msgInstantiateContractRule
+  msgInstantiateContractRule,
+  msgSwapTerraSwapRule
 } from "../logPatterns/terra-logs-rule";
 import { LogFindersRuleSet } from "../types";
 
@@ -37,7 +38,9 @@ export const terraRuleSet = () => {
     rule: msgWithdrawDelegationRewardRule(),
     transform: (fragment, matched) => ({
       msgType: "terra/withdraw-delegation-reward",
-      canonicalMsg: [`Withdraw reward from ${fragment.attributes[1].value}`],
+      canonicalMsg: [
+        `Withdraw ${fragment.attributes[0].value} from ${fragment.attributes[1].value}`
+      ],
       amountIn: `${fragment.attributes[0].value}`,
       payload: fragment
     })
@@ -219,6 +222,17 @@ export const terraRuleSet = () => {
     })
   };
 
+  const msgSwapTerraSwapRuleSet: LogFindersRuleSet = {
+    rule: msgSwapTerraSwapRule(),
+    transform: (fragment, matched) => ({
+      msgType: "terra/terra-swap",
+      canonicalMsg: [
+        `Swap ${fragment.attributes[4].value}${fragment.attributes[2].value} for ${fragment.attributes[5].value}${fragment.attributes[3].value}`
+      ],
+      payload: fragment
+    })
+  };
+
   return [
     msgSendRuleSet,
     msgWithdrawDelegationRewardRuleSet,
@@ -238,6 +252,7 @@ export const terraRuleSet = () => {
     msgBeginRedelegateRuleSet,
     msgStoreCodeRuleSet,
     msgMigrateContractRuleSet,
-    msgInstantiateContractRuleSet
+    msgInstantiateContractRuleSet,
+    msgSwapTerraSwapRuleSet
   ];
 };

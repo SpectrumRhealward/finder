@@ -5,6 +5,8 @@
 
   @media (max-width: $breakpoint) {
     flex-wrap: wrap;
+    align-items: flex-start;
+    flex-direction: column;
   }
 }
 
