@@ -16,7 +16,7 @@ import format from "../../scripts/format";
 import NetworkContext from "../../contexts/NetworkContext";
 import LogfinderContext from "../../contexts/LogfinderContext";
 import { LogFindersRuleSet } from "../../logfinder/types";
-import { getTxInfo } from "../../logfinder/format";
+import { getMatchLog } from "../../logfinder/format";
 import s from "./Txs.module.scss";
 
 type Fee = {
@@ -46,11 +46,16 @@ const formatAmount = (amount: string) => {
   }
 };
 
-const getAmount = (txResponse: TxResponse, ruleArray: LogFindersRuleSet[]) => {
+const getAmount = (
+  txResponse: TxResponse,
+  ruleArray: LogFindersRuleSet[],
+  address: string
+) => {
   const tx = JSON.stringify(txResponse);
   const amountIn: JSX.Element[] = [];
   const amountOut: JSX.Element[] = [];
-  const info = getTxInfo(tx, ruleArray);
+  const info = getMatchLog(tx, ruleArray, address);
+
   if (info) {
     for (const msg of info) {
       if (msg.transformed?.amountIn) {
@@ -93,7 +98,7 @@ const Txs = ({
     const { tx: txBody, txhash, height, timestamp, chainId } = response;
     const isSuccess = !response.code;
 
-    const [amountIn, amountOut] = getAmount(response, ruleArray);
+    const [amountIn, amountOut] = getAmount(response, ruleArray, address);
 
     return [
       <span>

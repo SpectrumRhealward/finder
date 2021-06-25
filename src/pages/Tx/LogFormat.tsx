@@ -5,6 +5,7 @@ import Address from "../../components/Address";
 import Flex from "../../components/Flex";
 import format from "../../scripts/format";
 import { isFinite } from "../../scripts/math";
+import useNativeDenoms from "../../hooks/useNativeDenoms";
 import s from "./LogFormat.module.scss";
 
 type Props = {
@@ -17,13 +18,10 @@ const TerraValidatorAddressRegExp = /(terravaloper[0-9][a-z0-9]{38})/g;
 
 //text bold
 const TextBoldRegExp = /[0-9]|[^A-z]/g;
-
-//terra denom
-const NativeDenoms = ["uluna", "ukrw", "uusd", "usdr", "umnt"];
 //1.020 -> 1.02
 const NumberFormatRegExp = /\.?0+$/g;
 
-const coinSet = (str: string): string => {
+export const coinSet = (str: string, nativeDenoms: string[]): string => {
   if (isFinite(new BigNumber(str))) {
     return format.amount(str).replace(NumberFormatRegExp, "");
   }
@@ -33,11 +31,11 @@ const coinSet = (str: string): string => {
       .amount(coinData.amount.toString())
       .replace(NumberFormatRegExp, "")} ${format.denom(coinData.denom)}`;
   } catch {
-    return NativeDenoms.includes(str) ? format.denom(str) : str;
+    return nativeDenoms.includes(str) ? format.denom(str) : str;
   }
 };
 
-const assetFormat = (str: string): string => {
+export const assetFormat = (str: string, nativeDenoms: string[]): string => {
   if (str === ",") {
     return str;
   }
@@ -51,26 +49,27 @@ const assetFormat = (str: string): string => {
       .forEach((coin, index) => {
         value +=
           index === array.length - 1
-            ? `${coinSet(coin)}`
-            : `${coinSet(coin)}, `;
+            ? `${coinSet(coin, nativeDenoms)}`
+            : `${coinSet(coin, nativeDenoms)}, `;
       });
 
     return value;
   } else {
-    return coinSet(str);
+    return coinSet(str, nativeDenoms);
   }
 };
 
 const LogFormat = (prop: Props) => {
   const { actionStr } = prop;
   const renderArray: JSX.Element[] = [];
+  const nativeDenoms = useNativeDenoms();
 
   actionStr?.split(TerraAddressRegExp).forEach(str => {
     const res = str.match(TerraAddressRegExp);
     if (!res) {
       str.split(" ").forEach(string => {
-        if (string) {
-          const value = assetFormat(string);
+        if (string && nativeDenoms) {
+          const value = assetFormat(string, nativeDenoms);
           if (!value.match(TextBoldRegExp || TerraValidatorAddressRegExp)) {
             renderArray.push(<span className={s.action}>{value}</span>);
           } else if (string.match(TerraValidatorAddressRegExp)) {

@@ -137,10 +137,5 @@ export function getDefaultCurrency(denoms: string[]) {
 
 export function transformChainId(chainId: string) {
   const chain = chainId.split("-")[0];
-
-  if (chain === "columbus") {
-    return "mainnet";
-  } else {
-    return "testnet";
-  }
+  return chain === "columbus" ? "mainnet" : "testnet";
 }

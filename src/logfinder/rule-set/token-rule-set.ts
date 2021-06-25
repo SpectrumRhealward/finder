@@ -1,8 +1,8 @@
 import {
   provideLiquidityRule,
   withdrawLiquidityRule,
-  ustToTokenSwapRule,
-  tokenToUstSwapRule,
+  //ustToTokenSwapRule,
+  //tokenToUstSwapRule,
   transferRule
 } from "../logPatterns/token-logs-rule";
 import { LogFindersRuleSet } from "../types";
@@ -36,31 +36,31 @@ export const tokenRuleSet = () => {
     })
   };
 
-  const ustToTokenSwapRuleSet: LogFindersRuleSet = {
-    rule: ustToTokenSwapRule(),
-    transform: (fragment, matched) => ({
-      msgType: "token/swap-ust-to-token",
-      canonicalMsg: [
-        `Swap ${matched[4].value}${matched[2].value} for ${matched[5].value}${matched[3].value}`
-      ],
-      amountIn: `${matched[5].value}${matched[3].value}`,
-      amountOut: `${matched[4].value}${matched[2].value}`,
-      payload: fragment
-    })
-  };
+  // const ustToTokenSwapRuleSet: LogFindersRuleSet = {
+  //   rule: ustToTokenSwapRule(),
+  //   transform: (fragment, matched) => ({
+  //     msgType: "token/swap-ust-to-token",
+  //     canonicalMsg: [
+  //       `Swap ${matched[4].value}${matched[2].value} for ${matched[5].value}${matched[3].value}`
+  //     ],
+  //     amountIn: `${matched[5].value}${matched[3].value}`,
+  //     amountOut: `${matched[4].value}${matched[2].value}`,
+  //     payload: fragment
+  //   })
+  // };
 
-  const tokenToUstSwapRuleSet: LogFindersRuleSet = {
-    rule: tokenToUstSwapRule(),
-    transform: (fragment, matched) => ({
-      msgType: "token/swap-token-to-ust",
-      canonicalMsg: [
-        `Swap ${matched[9].value}${matched[7].value} for ${matched[10].value}${matched[8].value}`
-      ],
-      amountIn: `${matched[10].value}${matched[8].value}`,
-      amountOut: `${matched[9].value}${matched[7].value}`,
-      payload: fragment
-    })
-  };
+  // const tokenToUstSwapRuleSet: LogFindersRuleSet = {
+  //   rule: tokenToUstSwapRule(),
+  //   transform: (fragment, matched) => ({
+  //     msgType: "token/swap-token-to-ust",
+  //     canonicalMsg: [
+  //       `Swap ${matched[9].value}${matched[7].value} for ${matched[10].value}${matched[8].value}`
+  //     ],
+  //     amountIn: `${matched[10].value}${matched[8].value}`,
+  //     amountOut: `${matched[9].value}${matched[7].value}`,
+  //     payload: fragment
+  //   })
+  // };
 
   const transferRuleSet: LogFindersRuleSet = {
     rule: transferRule(),
@@ -69,7 +69,6 @@ export const tokenRuleSet = () => {
       canonicalMsg: [
         `Transfer ${matched[4].value}${matched[0].value} to ${matched[3].value}`
       ],
-      amountOut: `${matched[4].value}${matched[0].value}`,
       payload: fragment
     })
   };
@@ -77,8 +76,8 @@ export const tokenRuleSet = () => {
   return [
     provideLiquidityRuleSet,
     withdrawLiquidityRuleSet,
-    ustToTokenSwapRuleSet,
-    tokenToUstSwapRuleSet,
+    //ustToTokenSwapRuleSet,
+    //tokenToUstSwapRuleSet,
     transferRuleSet
   ];
 };

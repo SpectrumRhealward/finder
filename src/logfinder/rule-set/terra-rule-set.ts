@@ -28,7 +28,7 @@ export const terraRuleSet = () => {
     transform: (fragment, matched) => ({
       msgType: "terra/send",
       canonicalMsg: [
-        `${fragment.attributes[1].value} send ${fragment.attributes[2].value} to ${fragment.attributes[0].value}`
+        `${matched[1].value} send ${matched[2].value} to ${matched[0].value}`
       ],
       payload: fragment
     })
@@ -38,10 +38,8 @@ export const terraRuleSet = () => {
     rule: msgWithdrawDelegationRewardRule(),
     transform: (fragment, matched) => ({
       msgType: "terra/withdraw-delegation-reward",
-      canonicalMsg: [
-        `Withdraw ${fragment.attributes[0].value} from ${fragment.attributes[1].value}`
-      ],
-      amountIn: `${fragment.attributes[0].value}`,
+      canonicalMsg: [`Withdraw ${matched[0].value} from ${matched[1].value}`],
+      amountIn: `${matched[0].value}`,
       payload: fragment
     })
   };
@@ -51,7 +49,7 @@ export const terraRuleSet = () => {
     transform: (fragment, matched) => ({
       msgType: "terra/vote",
       canonicalMsg: [
-        `Vote ${fragment.attributes[0].value} (Proposal ID: ${fragment.attributes[1].value})`
+        `Vote ${matched[0].value} (Proposal ID: ${matched[1].value})`
       ],
       payload: fragment
     })
@@ -61,9 +59,7 @@ export const terraRuleSet = () => {
     rule: msgSubmitProposalRule(),
     transform: (fragment, matched) => ({
       msgType: "terra/submit-proposal",
-      canonicalMsg: [
-        `Create proposal (Proposal ID: ${fragment.attributes[0].value})`
-      ],
+      canonicalMsg: [`Create proposal (Proposal ID: ${matched[0].value})`],
       payload: fragment
     })
   };
@@ -73,9 +69,9 @@ export const terraRuleSet = () => {
     transform: (fragment, matched) => ({
       msgType: "terra/deposit",
       canonicalMsg: [
-        `Deposit ${fragment.attributes[0].value} (Proposal ID: ${fragment.attributes[1].value})`
+        `Deposit ${matched[0].value} (Proposal ID: ${matched[1].value})`
       ],
-      amountOut: `${fragment.attributes[0].value}`,
+      amountOut: `${matched[0].value}`,
       payload: fragment
     })
   };
@@ -84,11 +80,9 @@ export const terraRuleSet = () => {
     rule: msgSwapRule(),
     transform: (fragment, matched) => ({
       msgType: "terra/swap",
-      canonicalMsg: [
-        `Swap ${fragment.attributes[0].value} for ${fragment.attributes[3].value}`
-      ],
-      amountIn: `${fragment.attributes[3].value}`,
-      amountOut: `${fragment.attributes[0].value}`,
+      canonicalMsg: [`Swap ${matched[0].value} for ${matched[3].value}`],
+      amountIn: `${matched[3].value}`,
+      amountOut: `${matched[0].value}`,
       payload: fragment
     })
   };
@@ -133,7 +127,7 @@ export const terraRuleSet = () => {
     rule: msgUnjailRule(),
     transform: (fragment, matched) => ({
       msgType: "terra/unjail",
-      canonicalMsg: [`Unjail ${fragment.attributes[2].value}`],
+      canonicalMsg: [`Unjail ${matched[2].value}`],
       payload: fragment
     })
   };
@@ -143,9 +137,9 @@ export const terraRuleSet = () => {
     transform: (fragment, matched) => ({
       msgType: "terra/undelegete",
       canonicalMsg: [
-        `Undelegete ${fragment.attributes[1].value}uluna to ${fragment.attributes[0].value}`
+        `Undelegete ${matched[1].value}uluna to ${matched[0].value}`
       ],
-      amountIn: `${fragment.attributes[1].value}uluna`,
+      amountIn: `${matched[1].value}uluna`,
       payload: fragment
     })
   };
@@ -154,7 +148,7 @@ export const terraRuleSet = () => {
     rule: msgEditValidatorRule(),
     transform: (fragment, matched) => ({
       msgType: "terra/edit-validator",
-      canonicalMsg: [`Edit ${fragment.attributes[2].value}`],
+      canonicalMsg: [`Edit ${matched[2].value}`],
       payload: fragment
     })
   };
@@ -164,9 +158,9 @@ export const terraRuleSet = () => {
     transform: (fragment, matched) => ({
       msgType: "terra/delegate",
       canonicalMsg: [
-        `Delegate ${fragment.attributes[1].value}uluna to ${fragment.attributes[0].value}`
+        `Delegate ${matched[1].value}uluna to ${matched[0].value}`
       ],
-      amountOut: `${fragment.attributes[1].value}uluna`,
+      amountOut: `${matched[1].value}uluna`,
       payload: fragment
     })
   };
@@ -175,7 +169,7 @@ export const terraRuleSet = () => {
     rule: msgCreateValidatorRule(),
     transform: (fragment, matched) => ({
       msgType: "terra/create-validator",
-      canonicalMsg: [`Create ${fragment.attributes[0].value}`],
+      canonicalMsg: [`Create ${matched[0].value}`],
       payload: fragment
     })
   };
@@ -184,9 +178,7 @@ export const terraRuleSet = () => {
     rule: msgBeginRedelegateRule(),
     transform: (fragment, matched) => ({
       msgType: "terra/begin-redelegate",
-      canonicalMsg: [
-        `Redelegate ${fragment.attributes[2].value} to ${fragment.attributes[1].value}`
-      ],
+      canonicalMsg: [`Redelegate ${matched[2].value} to ${matched[1].value}`],
       payload: fragment
     })
   };
@@ -195,7 +187,7 @@ export const terraRuleSet = () => {
     rule: msgStoreCodeRule(),
     transform: (fragment, matched) => ({
       msgType: "terra/store-code",
-      canonicalMsg: [`Store ${fragment.attributes[1].value}`],
+      canonicalMsg: [`Store ${matched[1].value}`],
       payload: fragment
     })
   };
@@ -204,9 +196,7 @@ export const terraRuleSet = () => {
     rule: msgMigrateContractRule(),
     transform: (fragment, matched) => ({
       msgType: "terra/migrate-contract",
-      canonicalMsg: [
-        `Migrate ${fragment.attributes[1].value} to code ${fragment.attributes[0].value}`
-      ],
+      canonicalMsg: [`Migrate ${matched[1].value} to code ${matched[0].value}`],
       payload: fragment
     })
   };
@@ -216,7 +206,7 @@ export const terraRuleSet = () => {
     transform: (fragment, matched) => ({
       msgType: "terra/instantiate-contract",
       canonicalMsg: [
-        `Instantiate ${fragment.attributes[2].value} to code ${fragment.attributes[1].value}`
+        `Instantiate ${matched[2].value} to code ${matched[1].value}`
       ],
       payload: fragment
     })
@@ -227,8 +217,10 @@ export const terraRuleSet = () => {
     transform: (fragment, matched) => ({
       msgType: "terra/terra-swap",
       canonicalMsg: [
-        `Swap ${fragment.attributes[4].value}${fragment.attributes[2].value} for ${fragment.attributes[5].value}${fragment.attributes[3].value}`
+        `Swap ${matched[4].value}${matched[2].value} for ${matched[5].value}${matched[3].value}`
       ],
+      amountIn: `${matched[5].value}${matched[3].value}`,
+      amountOut: `${matched[4].value}${matched[2].value}`,
       payload: fragment
     })
   };

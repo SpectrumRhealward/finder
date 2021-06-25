@@ -17,6 +17,7 @@ const useFetch = ({
     setError(undefined);
     setIsLoading(true);
   };
+
   useEffect(() => {
     const fetchData = async () => {
       init();

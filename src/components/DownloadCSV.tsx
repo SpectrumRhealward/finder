@@ -24,13 +24,13 @@ const DownloadCSV = ({ address }: { address: string }) => {
           <DatePicker
             className={c(s.dateComponent, s.startDateInput)}
             selected={startDate}
-            onChange={date => setStartDate(date)}
+            onChange={date => date && setStartDate(date)}
           />
           ~
           <DatePicker
             className={s.dateComponent}
             selected={endDate}
-            onChange={date => setEndDate(date)}
+            onChange={date => date && setEndDate(date)}
           />
         </div>
         <ExtLink href={csvData?.href} download={`${csvData?.children}.csv`}>

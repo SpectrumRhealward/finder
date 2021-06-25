@@ -15,7 +15,7 @@ import {
   unlockCollateralRule,
   withdrawCollateralRule,
   withdrawUnbondedRule,
-  blunaSwapRule,
+  //blunaSwapRule,
   ustSwapRule,
   stakeLPRule,
   unstakeLPRule,
@@ -174,21 +174,21 @@ export const anchorRuleSet = (network: string) => {
     })
   };
 
-  const anchorbLunaSwapRuleSet: LogFindersRuleSet = {
-    rule: blunaSwapRule(
-      contract["anchorbLunaAddress"],
-      contract["anchorbLunaPairAddress"]
-    ),
-    transform: (fragment, matched) => ({
-      msgType: "anchor/bLuna-swap",
-      canonicalMsg: [
-        `Swap ${matched[18].value}${matched[15].value} for ${matched[17].value}${matched[16].value}`
-      ],
-      amountIn: `${matched[17].value}${matched[16].value}`,
-      amountOut: `${matched[18].value}${matched[15].value}`,
-      payload: fragment
-    })
-  };
+  // const anchorbLunaSwapRuleSet: LogFindersRuleSet = {
+  //   rule: blunaSwapRule(
+  //     contract["anchorbLunaAddress"],
+  //     contract["anchorbLunaPairAddress"]
+  //   ),
+  //   transform: (fragment, matched) => ({
+  //     msgType: "anchor/bLuna-swap",
+  //     canonicalMsg: [
+  //       `Swap ${matched[18].value}${matched[15].value} for ${matched[17].value}${matched[16].value}`
+  //     ],
+  //     amountIn: `${matched[17].value}${matched[16].value}`,
+  //     amountOut: `${matched[18].value}${matched[15].value}`,
+  //     payload: fragment
+  //   })
+  // };
 
   const anchorUstSwapRuleSet: LogFindersRuleSet = {
     rule: ustSwapRule(
@@ -347,7 +347,7 @@ export const anchorRuleSet = (network: string) => {
     anchorWithdrawCollateralRuleSet,
     anchorBorrowStableRuleSet,
     anchorRepayStableRuleSet,
-    anchorbLunaSwapRuleSet,
+    //anchorbLunaSwapRuleSet,
     anchorUstSwapRuleSet,
     anchorStakeLPRuleSet,
     anchorUnstakeLPRuleSet,

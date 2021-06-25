@@ -62,25 +62,25 @@ export const ustToTokenSwapRule = () => ({
   ]
 });
 
-export const tokenToUstSwapRule = () => ({
-  type: "from_contract",
-  attributes: [
-    ["contract_address"],
-    ["action", "send"],
-    ["from"],
-    ["to"],
-    ["amount"],
-    ["contract_address"],
-    ["action", "swap"],
-    ["offer_asset"],
-    ["ask_asset"],
-    ["offer_amount"],
-    ["return_amount"],
-    ["tax_amount"],
-    ["spread_amount"],
-    ["commission_amount"]
-  ]
-});
+// export const tokenToUstSwapRule = () => ({
+//   type: "from_contract",
+//   attributes: [
+//     ["contract_address"],
+//     ["action", "send"],
+//     ["from"],
+//     ["to"],
+//     ["amount"],
+//     ["contract_address"],
+//     ["action", "swap"],
+//     ["offer_asset"],
+//     ["ask_asset"],
+//     ["offer_amount"],
+//     ["return_amount"],
+//     ["tax_amount"],
+//     ["spread_amount"],
+//     ["commission_amount"]
+//   ]
+// });
 
 export const transferRule = () => ({
   type: "from_contract",

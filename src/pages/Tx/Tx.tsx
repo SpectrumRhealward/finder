@@ -9,7 +9,7 @@ import LogfinderContext from "../../contexts/LogfinderContext";
 import WithFetch from "../../HOCs/WithFetch";
 import { fromISOTime, sliceMsgType } from "../../scripts/utility";
 import format from "../../scripts/format";
-import { getTxInfo } from "../../logfinder/format";
+import { getMatchLog } from "../../logfinder/format";
 import { LogFindersRuleSet } from "../../logfinder/types";
 import LogFormat from "./LogFormat";
 import s from "./Tx.module.scss";
@@ -38,8 +38,7 @@ function getAmountAndDenom(tax: string) {
 function getAction(txResponse: TxResponse, ruleArray: LogFindersRuleSet[]) {
   const tx = JSON.stringify(txResponse);
   const msg: string[] = [];
-
-  const info = getTxInfo(tx, ruleArray);
+  const info = getMatchLog(tx, ruleArray);
 
   info?.forEach(data => {
     if (data.transformed) {

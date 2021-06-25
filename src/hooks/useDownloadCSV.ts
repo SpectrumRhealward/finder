@@ -2,7 +2,7 @@ import { useContext } from "react";
 import { path } from "ramda";
 import { format as formatDate } from "date-fns";
 import { map } from "lodash";
-import { getTxInfo } from "../logfinder/format";
+import { getMatchLog } from "../logfinder/format";
 import LogfinderContext from "../contexts/LogfinderContext";
 import { useNetwork } from "../HOCs/WithFetch";
 import { transformChainId } from "../scripts/utility";
@@ -24,35 +24,55 @@ const useDownloadCSV = (address: string, startDate: Date, endDate: Date) => {
   const chainId = useNetwork();
   const txs = useGetTxs(startDate, endDate, address, chainId);
   const { ruleArray } = useContext(LogfinderContext);
-  const logArray = txs?.map(tx => getTxInfo(JSON.stringify(tx), ruleArray));
+  const logArray = txs?.map(tx =>
+    getMatchLog(JSON.stringify(tx), ruleArray, address)
+  );
   const network = transformChainId(chainId);
 
-  const denoms = useNativeDenoms()
-    ?.map(denom => format.denom(denom))
-    .concat("Luna");
+  const denoms = useNativeDenoms()?.concat("uluna");
 
   const { whitelist } = useWhitelist(network);
   const symbols = whitelist && Object.values(whitelist)?.map(data => data);
-  const symbolAndDenoms = map(symbols, "symbol").concat(denoms);
 
-  const denomColumns: Column[] = symbolAndDenoms.map(denom => ({
-    dataIndex: [""],
-    title: denom
-  }));
-  const defaultColumns: Column[] = [
-    {
-      dataIndex: ["timestamp"],
-      title: "datetime",
-      render: value => formatDate(new Date(value), "M/d/yyyy H:mm")
-    }
-  ];
+  if (denoms && symbols) {
+    const symbolAndDenoms: string[] = map(symbols, "symbol").concat(
+      denoms.map(denom => format.denom(denom))
+    );
 
-  const all = {
-    children: "CSV",
-    href: logArray && createCSV([...defaultColumns, ...denomColumns], logArray)
-  };
+    const denomColumns: Column[] = symbolAndDenoms.map(denom => ({
+      dataIndex: [denom],
+      title: denom
+    }));
+    const defaultColumns: Column[] = [
+      {
+        dataIndex: ["timestamp"],
+        title: "datetime",
+        render: value => formatDate(new Date(value), "M/d/yyyy H:mm")
+      },
+      {
+        dataIndex: ["msgType"],
+        title: "type"
+      }
+      // {
+      //   dataIndex: ["amountIn"],
+      //   title: "amountIn",
+      //   render: value => coinSet(value, denoms)
+      // },
+      // {
+      //   dataIndex: ["amountOut"],
+      //   title: "amountOut",
+      //   render: value => coinSet(value, denoms)
+      // }
+    ];
 
-  return all;
+    const all = {
+      children: "CSV",
+      href:
+        logArray && createCSV([...defaultColumns, ...denomColumns], logArray)
+    };
+
+    return all;
+  }
 };
 
 export default useDownloadCSV;

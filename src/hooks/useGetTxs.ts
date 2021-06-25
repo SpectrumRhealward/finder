@@ -4,8 +4,8 @@ import { useRequest } from "../HOCs/WithFetch";
 
 type TxsResult = {
   limit: number;
-  txs: TxResponse[];
   next?: number;
+  txs: TxResponse[];
 };
 
 const useGetTxs = (

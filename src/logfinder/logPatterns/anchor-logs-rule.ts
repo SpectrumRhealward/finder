@@ -217,33 +217,33 @@ export const repayStableRule = (marketAddress: string) => ({
   ]
 });
 
-export const blunaSwapRule = (bLunaAddress: string, pairAddress: string) => ({
-  type: "from_contract",
-  attributes: [
-    ["contract_address", bLunaAddress],
-    ["action", "send"],
-    ["from"],
-    ["to"],
-    ["amount"],
-    ["contract_address"],
-    ["action"],
-    ["holder_address"],
-    ["amount"],
-    ["contract_address"],
-    ["action"],
-    ["holder_address"],
-    ["amount"],
-    ["contract_address", pairAddress],
-    ["action", "swap"],
-    ["offer_asset", bLunaAddress],
-    ["ask_asset"],
-    ["offer_amount"],
-    ["return_amount"],
-    ["tax_amount"],
-    ["spread_amount"],
-    ["commission_amount"]
-  ]
-});
+// export const blunaSwapRule = (bLunaAddress: string, pairAddress: string) => ({
+//   type: "from_contract",
+//   attributes: [
+//     ["contract_address", bLunaAddress],
+//     ["action", "send"],
+//     ["from"],
+//     ["to"],
+//     ["amount"],
+//     ["contract_address"],
+//     ["action"],
+//     ["holder_address"],
+//     ["amount"],
+//     ["contract_address"],
+//     ["action"],
+//     ["holder_address"],
+//     ["amount"],
+//     ["contract_address", pairAddress],
+//     ["action", "swap"],
+//     ["offer_asset", bLunaAddress],
+//     ["ask_asset"],
+//     ["offer_amount"],
+//     ["return_amount"],
+//     ["tax_amount"],
+//     ["spread_amount"],
+//     ["commission_amount"]
+//   ]
+// });
 
 // export const lunaSwapRule = (pairAddress: string) => ({
 //   type: "from_contract",
